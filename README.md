@@ -49,3 +49,53 @@ Recognizing the need for a more efficient protocol, HTTP/2 was standardized in 2
 The shift from HTTP/1.1 to HTTP/2 primarily aims at performance improvements, especially in environments with complex application delivery needs. Modern web browsers and servers widely support HTTP/2, and it's generally backward compatible with HTTP/1.1, meaning that it can gracefully degrade to HTTP/1.1 if necessary.
 
 From a software engineering perspective, while HTTP/2 reduces the need for some optimizations used with HTTP/1.1 (like image sprites or domain sharding), it also imposes new requirements, such as understanding the nuances of server push and multiplexing. Implementing HTTP/2 can significantly enhance user experience by reducing load times and improving site responsiveness.
+
+### 1. Unary RPC
+
+In unary RPC, the client sends a single request to the server and gets a single response back, just like a typical function call.
+
+**Example:**
+```go
+// Service definition in the .proto file
+rpc SayHello(HelloRequest) returns (HelloResponse);
+```
+Here, `SayHello` is a simple unary call where the client sends a `HelloRequest` and receives a `HelloResponse`.
+
+### 2. Server Streaming RPC
+
+In server streaming RPC, the client sends a request to the server and gets a stream to read a sequence of messages back. The client reads from the returned stream until there are no more messages. This type is useful for cases where the server needs to send a lot of data (e.g., logs or monitoring data).
+
+**Example:**
+```go
+// Service definition in the .proto file
+rpc ListFeatures(Rectangle) returns (stream Feature);
+```
+
+`ListFeatures` might be used to send a series of `Feature` objects that fall within a defined `Rectangle`.
+
+### 3. Client Streaming RPC
+
+Client streaming RPC is the opposite of server streaming: the client writes a sequence of messages and sends them to the server, using a provided stream. Once the client has finished writing the messages, it waits for the server to read them all and return a response.
+
+**Example:**
+```go
+// Service definition in the .proto file
+rpc RecordRoute(stream Point) returns (RouteSummary);
+```
+
+In `RecordRoute`, the client might stream a series of geographic `Point` objects to the server, which then returns a `RouteSummary`.
+
+### 4. Bidirectional Streaming RPC
+
+Bidirectional streaming RPC allows both the client and the server to read and write in a stream independently. Both sides can send a sequence of messages using a read-write stream. The streams operate independently, so clients and servers can read and write in whatever order they like: for example, the server could wait to receive all the client’s messages before writing its responses, or it could alternately read a message then write a message, or some other combination of read-write patterns.
+
+**Example:**
+```go
+// Service definition in the .proto file
+rpc RouteChat(stream RouteNote) returns (stream RouteNote);
+```
+
+`RouteChat` allows the client and server to exchange messages (or `RouteNote` objects) in a freeform dialogue where both sides send as they see fit.
+
+
+Each of these API types suits different needs. Unary is great for simple request-response interaction, while the various streaming modes can handle more complex interactions, such as real-time updates, large data transfers, or ongoing conversations. The choice of API style in gRPC can significantly affect the design and performance of your application, especially in systems where network latency or data throughput is a concern. Knowing when to use each type can help you build more efficient and effective microservices.
