@@ -144,3 +144,7 @@ Current File structure:
 ```
 
 So we separate the Client and Server. The client will be responsible for making requests to the server, and the server will be responsible for handling those requests.
+
+## Section 6 gRPC Server Streaming
+
+gRPC Server Streaming is a type of API where the client sends a single request to the server and gets a stream to read a sequence of messages back. The client reads from the returned stream until there are no more messages. This type of API is useful when the server needs to send a lot of data (e.g., logs or monitoring data) to the client.
