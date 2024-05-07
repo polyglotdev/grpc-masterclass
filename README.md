@@ -99,3 +99,48 @@ rpc RouteChat(stream RouteNote) returns (stream RouteNote);
 
 
 Each of these API types suits different needs. Unary is great for simple request-response interaction, while the various streaming modes can handle more complex interactions, such as real-time updates, large data transfers, or ongoing conversations. The choice of API style in gRPC can significantly affect the design and performance of your application, especially in systems where network latency or data throughput is a concern. Knowing when to use each type can help you build more efficient and effective microservices.
+
+## Process of getting things started
+
+Current File structure:
+
+```bash
+.
+├── Makefile           # Used for automating the build process
+├── README.md          # Project documentation
+├── bin                # May contain compiled binaries (not mandatory in the structure)
+│   ├── calculator
+│   │   ├── client     # Binaries for calculator client
+│   │   └── server     # Binaries for calculator server
+│   └── greet
+│       ├── client     # Binaries for greet client
+│       └── server     # Binaries for greet server
+├── calculator
+│   ├── client
+│   │   ├── main.go    # Entry point for the calculator client
+│   │   └── sum.go     # Client-side logic for calling sum service
+│   ├── proto
+│   │   ├── calculator.pb.go           # Generated Go file from calculator.proto
+│   │   ├── calculator.proto           # Proto file for calculator service
+│   │   ├── calculator_grpc.pb.go      # Generated gRPC specific Go file
+│   │   ├── sum.pb.go                  # Generated Go file from sum.proto (if separate)
+│   │   └── sum.proto                  # Proto file for sum service (if separate)
+│   └── server
+│       ├── main.go    # Entry point for the calculator server
+│       └── sum.go     # Server-side implementation of sum service
+├── go.mod             # Manage dependencies
+├── go.sum             # Lock file for dependencies
+└── greet
+    ├── client
+    │   ├── greet.go   # Client-side logic for calling greet service
+    │   └── main.go    # Entry point for the greet client
+    ├── proto
+    │   ├── greet.pb.go                # Generated Go file from greet.proto
+    │   ├── greet.proto                # Proto file for greet service
+    │   └── greet_grpc.pb.go           # Generated gRPC specific Go file
+    └── server
+        ├── greet.go   # Server-side implementation of greet service
+        └── main.go    # Entry point for the greet server
+```
+
+So we separate the Client and Server. The client will be responsible for making requests to the server, and the server will be responsible for handling those requests.
